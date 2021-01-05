@@ -71,6 +71,46 @@ class TestApi(unittest.TestCase):
 
         self.assertEqual(response.status, HTTPStatus.BAD_REQUEST)
 
+    @patch('biostudiesclient.api.requests.get')
+    def test_when_request_user_files_then_returns_correct_response(self, mock_get):
+        user_files_response = [
+            {
+                "name": "7f03654c-fb19-4a17-b16b-740d5ad78bd0",
+                "path": "user",
+                "size": 4096,
+                "type": "DIR"
+            },
+            {
+                "name": "raw_reads_1.xlsx",
+                "path": "user",
+                "size": 19110,
+                "type": "FILE"
+            },
+            {
+                "name": "fff25c6a-d2d9-496f-aefe-882a2a787ae1",
+                "path": "user",
+                "size": 4096,
+                "type": "DIR"
+            },
+            {
+                "name": "5200400d-9f45-4c79-83b8-537373fa4c5f",
+                "path": "user",
+                "size": 4096,
+                "type": "DIR"
+            }
+        ]
+
+        mock_get.return_value.status_code = HTTPStatus.OK
+        mock_get.return_value.text = user_files_response
+
+        session_id = 'test.session.id'
+
+        response = self.api.get_user_files(session_id)
+
+        self.assertEqual(response.status, HTTPStatus.OK)
+        self.assertEqual(len(response.json), 4)
+        self.assertEqual(response.json, user_files_response)
+
 
 if __name__ == '__main__':
     unittest.main()
