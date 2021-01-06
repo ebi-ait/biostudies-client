@@ -111,6 +111,21 @@ class TestApi(unittest.TestCase):
         self.assertEqual(len(response.json), 4)
         self.assertEqual(response.json, user_files_response)
 
+    @patch('biostudiesclient.api.requests.delete')
+    def test_when_delete_user_files_then_returns_correct_response(self, mock_delete):
+        mock_delete.return_value.status_code = HTTPStatus.OK
+
+        file_name = "test_file.txt"
+        session_id = 'test.session.id'
+
+        response = self.api.delete_file(session_id, file_name)
+
+        self.assertEqual(response.status, HTTPStatus.OK)
+
+    # TODO Whenever Biostudies correct their API and returns the correct HTTP Status Code
+    # when a file is not available for deletion then write a test against it
+    # currently they return 200 OK, even if the file not exists
+
 
 if __name__ == '__main__':
     unittest.main()
