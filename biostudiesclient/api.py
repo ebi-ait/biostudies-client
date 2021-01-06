@@ -1,7 +1,8 @@
 import requests
 
 from biostudiesclient.response_utils import ResponseUtils
-from biostudiesclient.url_paths import CREATE_FOLDER, UPLOAD_FILE, GET_USER_FILES, DELETE_FILE
+from biostudiesclient.url_paths import CREATE_FOLDER, UPLOAD_FILE, GET_USER_FILES, DELETE_FILE,\
+    CREATE_SUBMISSION
 
 
 class Api:
@@ -61,6 +62,16 @@ class Api:
 
         response = ResponseUtils.handle_response(
             requests.delete(url, headers=headers))
+
+        return response
+
+    @staticmethod
+    def create_submission(session_id, metadata):
+        url = CREATE_SUBMISSION
+        headers = Api.get_basic_headers(session_id)
+
+        response = ResponseUtils.handle_response(
+            requests.post(url, headers=headers, json=metadata))
 
         return response
 

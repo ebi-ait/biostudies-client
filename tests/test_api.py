@@ -101,7 +101,7 @@ class TestApi(unittest.TestCase):
         ]
 
         mock_get.return_value.status_code = HTTPStatus.OK
-        mock_get.return_value.text = user_files_response
+        mock_get.return_value.json.return_value = user_files_response
 
         session_id = 'test.session.id'
 
@@ -125,6 +125,278 @@ class TestApi(unittest.TestCase):
     # TODO Whenever Biostudies correct their API and returns the correct HTTP Status Code
     # when a file is not available for deletion then write a test against it
     # currently they return 200 OK, even if the file not exists
+
+    @patch('biostudiesclient.api.requests.post')
+    def test_when_post_a_submission_then_returns_correct_response(self, mock_post):
+        submission_response = self.__get_submission_response_without_file()
+        mock_post.return_value.status_code = HTTPStatus.OK
+        mock_post.return_value.json.return_value = submission_response
+
+        session_id = 'test.session.id'
+        metadata = self.__create_metadata_for_submission_without_file()
+
+        response = self.api.create_submission(session_id, metadata)
+
+        self.assertEqual(response.status, HTTPStatus.OK)
+
+        response_json = response.json
+
+        self.assertEqual(response_json['accno'], submission_response['accno'])
+
+    @patch('biostudiesclient.api.requests.post')
+    def test_when_post_a_submission_with_not_existing_file_then_returns_error_response(self, mock_post):
+        submission_response = self.__get_submission_response_for_not_existing_file()
+        mock_post.return_value.status_code = HTTPStatus.BAD_REQUEST
+        mock_post.return_value.json.return_value = submission_response
+
+        session_id = 'test.session.id'
+        metadata = self.__create_metadata_for_submission_with_a_file()
+
+        response = self.api.create_submission(session_id, metadata)
+
+        self.assertEqual(response.status, HTTPStatus.BAD_REQUEST)
+        self.assertFalse(response.json)
+        self.assertEqual(
+            "Submission validation errors. File not found: raw_reads_1.xlsx.",
+            response.error_message)
+
+    @staticmethod
+    def __create_metadata_for_submission_without_file():
+        return {
+            "attachTo": "Phoenix Project",
+            "attributes": [
+                {
+                    "name": "Title",
+                    "value": "phoenix submission example"
+                },
+                {
+                    "name": "Description",
+                    "value": "This is the description of a test phoenix submssion."
+                }
+            ],
+            "section": {
+                "accno": "Project",
+                "type": "Study",
+                "attributes": [
+                    {
+                        "name": "Title",
+                        "value": "Cells of the adult human heart"
+                    },
+                    {
+                        "name": "Description",
+                        "value": "Cardiovascular disease is the leading cause of death worldwide."
+                    },
+                    {
+                        "name": "Organism",
+                        "value": "Homo sapiens (human)"
+                    },
+                    {
+                        "name": "alias",
+                        "value": "Phoenix-test-1"
+                    }
+                ],
+                "files": [
+                ],
+                "links": [
+                    {
+                        "url": "ABC123",
+                        "attributes": [
+                            {
+                                "name": "type",
+                                "value": "gen"
+                            }
+                        ]
+                    },
+                    {
+                        "url": "SAMEA7249626",
+                        "attributes": [
+                            {
+                                "name": "Type",
+                                "value": "BioSample"
+                            }
+                        ]
+                    }
+                ],
+                "subsections": [
+                    {
+                        "type": "Author",
+                        "attributes": [
+                            {
+                                "name": "Name",
+                                "value": "John Doe"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+    @staticmethod
+    def __create_metadata_for_submission_with_a_file():
+        return {
+            "attachTo": "Phoenix Project",
+            "attributes": [
+                {
+                    "name": "Title",
+                    "value": "phoenix submission example"
+                },
+                {
+                    "name": "Description",
+                    "value": "This is the description of a test phoenix submssion."
+                }
+            ],
+            "section": {
+                "accno": "Project",
+                "type": "Study",
+                "attributes": [
+                    {
+                        "name": "Title",
+                        "value": "Cells of the adult human heart"
+                    },
+                    {
+                        "name": "Description",
+                        "value": "Cardiovascular disease is the leading cause of death worldwide."
+                    },
+                    {
+                        "name": "Organism",
+                        "value": "Homo sapiens (human)"
+                    },
+                    {
+                        "name": "alias",
+                        "value": "Phoenix-test-1"
+                    }
+                ],
+                "files": [
+                    {
+                        "path": "raw_reads_1.xlsx",
+                        "attributes": [
+                            {
+                                "name": "Description",
+                                "value": "Raw Data File"
+                            }
+                        ],
+                        "type": "file"
+                    }
+                ],
+                "links": [
+                    {
+                        "url": "ABC123",
+                        "attributes": [
+                            {
+                                "name": "type",
+                                "value": "gen"
+                            }
+                        ]
+                    },
+                    {
+                        "url": "SAMEA7249626",
+                        "attributes": [
+                            {
+                                "name": "Type",
+                                "value": "BioSample"
+                            }
+                        ]
+                    }
+                ],
+                "subsections": [
+                    {
+                        "type": "Author",
+                        "attributes": [
+                            {
+                                "name": "Name",
+                                "value": "John Doe"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+    @staticmethod
+    def __get_submission_response_without_file():
+        return {
+            "accno": "S-BSST683",
+            "attributes": [
+                {
+                    "name": "Description",
+                    "value": "This is the description of a test phoenix submssion."
+                },
+                {
+                    "name": "Title",
+                    "value": "phoenix submission example"
+                }
+            ],
+            "section": {
+                "accno": "Project",
+                "type": "Study",
+                "attributes": [
+                    {
+                        "name": "Title",
+                        "value": "Cells of the adult human heart"
+                    },
+                    {
+                        "name": "Description",
+                        "value": "Cardiovascular disease is the leading cause of death worldwide."
+                    },
+                    {
+                        "name": "Organism",
+                        "value": "Homo sapiens (human)"
+                    },
+                    {
+                        "name": "alias",
+                        "value": "Phoenix-test-1"
+                    }
+                ],
+                "links": [
+                    {
+                        "url": "ABC123",
+                        "attributes": [
+                            {
+                                "name": "type",
+                                "value": "gen"
+                            }
+                        ]
+                    },
+                    {
+                        "url": "SAMEA7249626",
+                        "attributes": [
+                            {
+                                "name": "Type",
+                                "value": "BioSample"
+                            }
+                        ]
+                    }
+                ],
+                "subsections": [
+                    {
+                        "type": "Author",
+                        "attributes": [
+                            {
+                                "name": "Name",
+                                "value": "John Doe"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+    @staticmethod
+    def __get_submission_response_for_not_existing_file():
+        return {
+            "status": "FAIL",
+            "log": {
+                "level": "ERROR",
+                "message": "Submission validation errors.",
+                "subnodes": [
+                    {
+                        "level": "ERROR",
+                        "message": "File not found: raw_reads_1.xlsx.",
+                        "subnodes": []
+                    }
+                ]
+            }
+        }
 
 
 if __name__ == '__main__':

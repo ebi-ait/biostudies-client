@@ -16,7 +16,7 @@ class TestResponseUtils(unittest.TestCase):
         input_response = Mock(spec=Response)
         input_response.status_code = HTTPStatus.OK
         response_text = self.correct_response_text_with_session_id()
-        input_response.text = response_text
+        input_response.json.return_value = response_text
 
         output_response = self.response_utils.handle_response(input_response)
 
