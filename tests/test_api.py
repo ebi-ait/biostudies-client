@@ -58,7 +58,7 @@ class TestApi(unittest.TestCase):
         mock_post.return_value.status_code = HTTPStatus.OK
         mock_post.return_value.json.return_value = None
 
-        file_path = "resources/test_file.txt"
+        file_path = "tests/resources/test_file.txt"
 
         response = self.api.upload_file(self.session_id, file_path)
 
@@ -69,7 +69,7 @@ class TestApi(unittest.TestCase):
     @patch('biostudiesclient.api.requests.post')
     def test_when_upload_a_file_with_wrong_header_then_returns_error_response(self, mock_post):
         expected_error_message = "Current request is not a multipart request"
-        file_path = "resources/test_file.txt"
+        file_path = "tests/resources/test_file.txt"
 
         mock_post.return_value.status_code = HTTPStatus.BAD_REQUEST
         mock_post.return_value.json.return_value = {"status": "FAIL",
