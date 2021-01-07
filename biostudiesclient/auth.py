@@ -9,6 +9,9 @@ from biostudiesclient.config import BIOSTUDIES_USERNAME, BIOSTUDIES_PASSWORD, BI
 
 # This class dealing with authentication.
 # It is using the provided credentials to login to BioStudies.
+from biostudiesclient.response_utils import ResponseUtils
+
+
 class Auth:
     def __init__(self):
         self.username = BIOSTUDIES_USERNAME
@@ -16,15 +19,13 @@ class Auth:
         self.login_url = f'{BIOSTUDIES_API_URL}/auth/login'
 
     def login(self):
-        response = requests.post(self.login_url, json=self.login_payload())
-        response_json = response.json()
-        response_status = response.status
+        response = ResponseUtils.handle_response(requests.post(self.login_url, json=self.login_payload()))
 
-        auth_response = AuthResponse(status=HTTPStatus(response_status))
-        if response_status == HTTPStatus.OK:
-            auth_response.session_id = response_json["sessid"]
+        auth_response = AuthResponse(status=HTTPStatus(response.status))
+        if response.status == HTTPStatus.OK:
+            auth_response.session_id = response.json["sessid"]
         else:
-            auth_response.error_message = response_json["log"]["message"]
+            auth_response.error_message = response.error_message
 
         return auth_response
 

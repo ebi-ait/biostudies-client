@@ -40,7 +40,7 @@ class TestAuth(unittest.TestCase):
     @patch('biostudiesclient.auth.requests.post')
     def test_given_correct_credentials_can_login(self, mock_post):
         mock_post.return_value.json.return_value = self.valid_auth_response
-        mock_post.return_value.status = HTTPStatus.OK
+        mock_post.return_value.status_code = HTTPStatus.OK
 
         response = self.auth.login()
 
@@ -50,7 +50,7 @@ class TestAuth(unittest.TestCase):
     @patch('biostudiesclient.auth.requests.post')
     def test_given_incorrect_credentials_returns_error(self, mock_post):
         mock_post.return_value.json.return_value = self.invalid_auth_response
-        mock_post.return_value.status = HTTPStatus.UNAUTHORIZED
+        mock_post.return_value.status_code = HTTPStatus.UNAUTHORIZED
 
         response = self.auth.login()
 
