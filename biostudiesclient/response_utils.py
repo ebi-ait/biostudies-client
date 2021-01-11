@@ -1,6 +1,12 @@
 from dataclasses import dataclass
 from http import HTTPStatus
 
+STATUS_CODE_OK = 200
+STATUS_CODE_BAD_REQUEST = 400
+STATUS_CODE_NOT_FOUND = 404
+STATUS_CODE_UNAUTHORIZED = 401
+STATUS_CODE_INTERNAL_SERVER_ERROR = 500
+
 TRY_IT_AGAIN_LATER_MESSAGE = "Unknown error happened. Please, try it again later."
 WRONG_REQUEST_URL_MESSAGE = "This URL {URL} not exists. Please, try to correct the requested URL."
 
@@ -11,16 +17,16 @@ class ResponseUtils:
     def handle_response(input_response):
         response = ResponseObject()
         response_json = ResponseUtils.__get_response_json(input_response)
-        if input_response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
+        if input_response.status_code == STATUS_CODE_INTERNAL_SERVER_ERROR:
             response.error_message = TRY_IT_AGAIN_LATER_MESSAGE
-        elif input_response.status_code == HTTPStatus.NOT_FOUND:
+        elif input_response.status_code == STATUS_CODE_NOT_FOUND:
             response.error_message = WRONG_REQUEST_URL_MESSAGE.format(URL=input_response.url)
-        elif input_response.status_code == HTTPStatus.UNAUTHORIZED:
+        elif input_response.status_code == STATUS_CODE_UNAUTHORIZED:
             error_message = ResponseUtils.__get_error_message(response_json)
             response.error_message = error_message if error_message else TRY_IT_AGAIN_LATER_MESSAGE
-        elif input_response.status_code == HTTPStatus.BAD_REQUEST:
+        elif input_response.status_code == STATUS_CODE_BAD_REQUEST:
             response.error_message = ResponseUtils.__get_error_message(response_json)
-        elif input_response.status_code == HTTPStatus.OK:
+        elif input_response.status_code == STATUS_CODE_OK:
             response.json = response_json
 
         response.status = input_response.status_code
@@ -29,7 +35,13 @@ class ResponseUtils:
 
     @staticmethod
     def __get_response_json(input_response):
-        return input_response.json()
+        if len(input_response.text) == 0:
+            return ''
+        # response_json = input_response.json()
+        # if len(response_json) == 0:
+        #     return {}
+        else:
+            return input_response.json()
 
     @staticmethod
     def __get_error_message(response_json):

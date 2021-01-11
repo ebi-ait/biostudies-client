@@ -9,8 +9,8 @@ class TestAuth(unittest.TestCase):
 
     def setUp(self) -> None:
         self.auth = Auth()
-        self.biostudies_username = 'username'
-        self.biostudies_password = 'pwd'
+        self.auth.username = "username"
+        self.auth.password = "password"
         self.valid_sessid = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ7XCJpZFwiOjExLFwiZW1haWxcIjpcImthcm9seUBlYmkuYWMudWtcIixcImZ1bGxOYW1lXCI6XCJVbmlmaWVkIFN1Ym1pc3Npb24gSW50ZXJmYWNlXCIsXCJjcmVhdGlvblRpbWVcIjoxNjA4MjI0MjM5fSJ9.wxJ4cIbKfGzRxukDDblYXqLLUI1mZF7iS5A9xupj2dMaVgUaXhgNJEqMdRA2ouhS1LaZoIgH8Ri6Xssj0AzSqw"
         self.auth_error_message = "Invalid email address or password."
         self.valid_auth_response = {
@@ -40,6 +40,7 @@ class TestAuth(unittest.TestCase):
     @patch('biostudiesclient.auth.requests.post')
     def test_given_correct_credentials_can_login(self, mock_post):
         mock_post.return_value.json.return_value = self.valid_auth_response
+        mock_post.return_value.text = self.valid_auth_response
         mock_post.return_value.status_code = HTTPStatus.OK
 
         response = self.auth.login()
@@ -50,6 +51,7 @@ class TestAuth(unittest.TestCase):
     @patch('biostudiesclient.auth.requests.post')
     def test_given_incorrect_credentials_returns_error(self, mock_post):
         mock_post.return_value.json.return_value = self.invalid_auth_response
+        mock_post.return_value.text = self.invalid_auth_response
         mock_post.return_value.status_code = HTTPStatus.UNAUTHORIZED
 
         response = self.auth.login()

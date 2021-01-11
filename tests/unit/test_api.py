@@ -10,8 +10,9 @@ from biostudiesclient.response_utils import TRY_IT_AGAIN_LATER_MESSAGE, WRONG_RE
 class TestApi(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.api = Api()
         self.session_id = 'test.session.id'
+        self.api = Api(session_id=self.session_id)
+
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_request_wrong_url_then_returns_not_found_response(self, mock_post):
@@ -21,7 +22,7 @@ class TestApi(unittest.TestCase):
         mock_post.return_value.status_code = HTTPStatus.NOT_FOUND
         mock_post.return_value.url = url
 
-        response = self.api.create_user_sub_folder(self.session_id, folder_name)
+        response = self.api.create_user_sub_folder(folder_name)
 
         self.assertEqual(response.status, HTTPStatus.NOT_FOUND)
         self.assertFalse(response.json)
@@ -32,9 +33,9 @@ class TestApi(unittest.TestCase):
         folder_name = "test_folder"
 
         mock_post.return_value.status_code = HTTPStatus.OK
-        mock_post.return_value.json.return_value = None
+        mock_post.return_value.json.return_value = {}
 
-        response = self.api.create_user_sub_folder(self.session_id, folder_name)
+        response = self.api.create_user_sub_folder(folder_name)
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
@@ -47,7 +48,7 @@ class TestApi(unittest.TestCase):
         folder_name = "test_folder"
         self.session_id = 'incorrect.session.id'
 
-        response = self.api.create_user_sub_folder(self.session_id, folder_name)
+        response = self.api.create_user_sub_folder(folder_name)
 
         self.assertEqual(response.status, HTTPStatus.INTERNAL_SERVER_ERROR)
         self.assertFalse(response.json)
@@ -56,11 +57,11 @@ class TestApi(unittest.TestCase):
     @patch('biostudiesclient.api.requests.post')
     def test_when_upload_a_file_then_returns_ok_response(self, mock_post):
         mock_post.return_value.status_code = HTTPStatus.OK
-        mock_post.return_value.json.return_value = None
+        mock_post.return_value.json.return_value = {}
 
         file_path = "tests/resources/test_file.txt"
 
-        response = self.api.upload_file(self.session_id, file_path)
+        response = self.api.upload_file(file_path)
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
@@ -70,14 +71,15 @@ class TestApi(unittest.TestCase):
     def test_when_upload_a_file_with_wrong_header_then_returns_error_response(self, mock_post):
         expected_error_message = "Current request is not a multipart request"
         file_path = "tests/resources/test_file.txt"
+        error_response = {"status": "FAIL",
+                          "log": {"level": "ERROR",
+                                  "message": expected_error_message,
+                                  "subnodes": []}}
 
         mock_post.return_value.status_code = HTTPStatus.BAD_REQUEST
-        mock_post.return_value.json.return_value = {"status": "FAIL",
-                                                    "log": {"level": "ERROR",
-                                                            "message": expected_error_message,
-                                                            "subnodes": []}}
-
-        response = self.api.upload_file(self.session_id, file_path)
+        mock_post.return_value.json.return_value = error_response
+        mock_post.return_value.text = error_response
+        response = self.api.upload_file(file_path)
 
         self.assertEqual(response.status, HTTPStatus.BAD_REQUEST)
         self.assertFalse(response.json)
@@ -89,8 +91,9 @@ class TestApi(unittest.TestCase):
 
         mock_get.return_value.status_code = HTTPStatus.OK
         mock_get.return_value.json.return_value = user_files_response
+        mock_get.return_value.text = user_files_response
 
-        response = self.api.get_user_files(self.session_id)
+        response = self.api.get_user_files()
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertEqual(len(response.json), 4)
@@ -100,11 +103,11 @@ class TestApi(unittest.TestCase):
     @patch('biostudiesclient.api.requests.delete')
     def test_when_delete_user_files_then_returns_correct_response(self, mock_delete):
         mock_delete.return_value.status_code = HTTPStatus.OK
-        mock_delete.return_value.json.return_value = None
+        mock_delete.return_value.json.return_value = {}
 
         file_name = "test_file.txt"
 
-        response = self.api.delete_file(self.session_id, file_name)
+        response = self.api.delete_file(file_name)
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
@@ -119,10 +122,11 @@ class TestApi(unittest.TestCase):
         submission_response = self.__get_submission_response_without_file()
         mock_post.return_value.status_code = HTTPStatus.OK
         mock_post.return_value.json.return_value = submission_response
+        mock_post.return_value.text = submission_response
 
         metadata = self.__create_metadata_for_submission_without_file()
 
-        response = self.api.create_submission(self.session_id, metadata)
+        response = self.api.create_submission(metadata)
 
         self.assertEqual(response.status, HTTPStatus.OK)
 
@@ -137,10 +141,11 @@ class TestApi(unittest.TestCase):
         submission_response = self.__get_submission_response_for_not_existing_file()
         mock_post.return_value.status_code = HTTPStatus.BAD_REQUEST
         mock_post.return_value.json.return_value = submission_response
+        mock_post.return_value.text = submission_response
 
         metadata = self.__create_metadata_for_submission_with_a_file()
 
-        response = self.api.create_submission(self.session_id, metadata)
+        response = self.api.create_submission(metadata)
 
         self.assertEqual(response.status, HTTPStatus.BAD_REQUEST)
         self.assertFalse(response.json)
