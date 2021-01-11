@@ -5,4 +5,4 @@ install:
   - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
 script:
-  - nosetests
+  - nosetests biostudiesclient tests.unit -v
