@@ -29,7 +29,7 @@ class Api:
         :param folder_name: the name of the folder to be create for the user
         :return: Response from BioStudies API
         """
-        url = CREATE_FOLDER.format(folder_name=folder_name)
+        url = self.base_url + CREATE_FOLDER.format(folder_name=folder_name)
 
         headers = Api.get_basic_headers(self.session_id)
         response = ResponseUtils.handle_response(requests.post(url, headers=headers))
@@ -60,7 +60,7 @@ class Api:
         return response
 
     def delete_file(self, file_name):
-        url = DELETE_FILE.format(file_name=file_name)
+        url = self.base_url + DELETE_FILE.format(file_name=file_name)
         headers = Api.get_basic_headers(self.session_id)
 
         response = ResponseUtils.handle_response(
