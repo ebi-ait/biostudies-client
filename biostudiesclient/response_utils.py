@@ -1,3 +1,14 @@
+"""
+biostudiesclient.response_utils
+~~~~~~~~~~~~
+
+This module dealing with HTTP responses.
+
+:copyright: (c) 2021 by Karoly Erdos.
+:license: Apache2, see LICENSE for more details.
+"""
+
+
 from dataclasses import dataclass
 from http import HTTPStatus
 
@@ -12,9 +23,21 @@ WRONG_REQUEST_URL_MESSAGE = "This URL {URL} not exists. Please, try to correct t
 
 
 class ResponseUtils:
+    """ Utility class for handling API Response from BioStudies REST API """
 
     @staticmethod
     def handle_response(input_response):
+        """
+        Handling the response coming from BioStudies REST API.
+        The response always contains the status of the original response.
+        If the status is 200 OK, then it will contain the response in a JSON format,
+        otherwise it would contain the error message from the response.
+
+        :param input_response: BioStudies REST API's HTTP response
+        :return: Response from BioStudies API with the session id or the error message included
+        :rtype biostudiesclient.response_utils.ResponseObject
+        """
+
         response = ResponseObject()
         response_json = ResponseUtils.__get_response_json(input_response)
         if input_response.status_code == STATUS_CODE_INTERNAL_SERVER_ERROR:
@@ -55,6 +78,13 @@ class ResponseUtils:
 
 @dataclass
 class ResponseObject:
+    """
+    A data class for wrapping BioStudies response for any requests.
+    It always contains the status of the original response.
+    If the status is 200 OK, then it will contain the response in a JSON format,
+    otherwise it would contain the error message from the response.
+    """
+
     status = HTTPStatus.OK
     error_message = ""
     json = {}

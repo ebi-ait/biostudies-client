@@ -1,8 +1,0 @@
-LOGIN_TO_BST = '/auth/login'
-CREATE_FOLDER = '/folder/user?folder={folder_name}'
-UPLOAD_FILE = '/files/user'
-GET_USER_FILES = '/files/user'
-DELETE_FILE = '/files/user?fileName={file_name}'
-CREATE_SUBMISSION = '/submissions'
-GET_SUBMISSION_BY_ACCESSION_ID = '/submissions/{accession_id}.json'
-DELETE_SUBMISSION = '/submissions/{accession_id}'

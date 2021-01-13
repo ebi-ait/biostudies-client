@@ -1,3 +1,5 @@
+""" Contains configuration entries for biostudies client. """
+
 import os
 
 BIOSTUDIES_API_URL_DEV = 'http://biostudy-bia.ebi.ac.uk:8788'
