@@ -5,6 +5,7 @@ from mock import patch
 
 from biostudiesclient.api import Api
 from biostudiesclient.response_utils import TRY_IT_AGAIN_LATER_MESSAGE, WRONG_REQUEST_URL_MESSAGE
+from tests.test_utils import TestUtils
 
 
 class TestApi(unittest.TestCase):
@@ -124,7 +125,7 @@ class TestApi(unittest.TestCase):
         mock_post.return_value.json.return_value = submission_response
         mock_post.return_value.text = submission_response
 
-        metadata = self.__create_metadata_for_submission_without_file()
+        metadata = TestUtils.create_metadata_for_submission_without_file()
 
         response = self.api.create_submission(metadata)
 
@@ -143,7 +144,7 @@ class TestApi(unittest.TestCase):
         mock_post.return_value.json.return_value = submission_response
         mock_post.return_value.text = submission_response
 
-        metadata = self.__create_metadata_for_submission_with_a_file()
+        metadata = TestUtils.create_metadata_for_submission_with_a_file()
 
         response = self.api.create_submission(metadata)
 
@@ -182,157 +183,157 @@ class TestApi(unittest.TestCase):
             }
         ]
 
-    @staticmethod
-    def __create_metadata_for_submission_without_file():
-        return {
-            "attachTo": "Phoenix Project",
-            "attributes": [
-                {
-                    "name": "Title",
-                    "value": "phoenix submission example"
-                },
-                {
-                    "name": "Description",
-                    "value": "This is the description of a test phoenix submssion."
-                }
-            ],
-            "section": {
-                "accno": "Project",
-                "type": "Study",
-                "attributes": [
-                    {
-                        "name": "Title",
-                        "value": "Cells of the adult human heart"
-                    },
-                    {
-                        "name": "Description",
-                        "value": "Cardiovascular disease is the leading cause of death worldwide."
-                    },
-                    {
-                        "name": "Organism",
-                        "value": "Homo sapiens (human)"
-                    },
-                    {
-                        "name": "alias",
-                        "value": "Phoenix-test-1"
-                    }
-                ],
-                "files": [
-                ],
-                "links": [
-                    {
-                        "url": "ABC123",
-                        "attributes": [
-                            {
-                                "name": "type",
-                                "value": "gen"
-                            }
-                        ]
-                    },
-                    {
-                        "url": "SAMEA7249626",
-                        "attributes": [
-                            {
-                                "name": "Type",
-                                "value": "BioSample"
-                            }
-                        ]
-                    }
-                ],
-                "subsections": [
-                    {
-                        "type": "Author",
-                        "attributes": [
-                            {
-                                "name": "Name",
-                                "value": "John Doe"
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-
-    @staticmethod
-    def __create_metadata_for_submission_with_a_file():
-        return {
-            "attachTo": "Phoenix Project",
-            "attributes": [
-                {
-                    "name": "Title",
-                    "value": "phoenix submission example"
-                },
-                {
-                    "name": "Description",
-                    "value": "This is the description of a test phoenix submssion."
-                }
-            ],
-            "section": {
-                "accno": "Project",
-                "type": "Study",
-                "attributes": [
-                    {
-                        "name": "Title",
-                        "value": "Cells of the adult human heart"
-                    },
-                    {
-                        "name": "Description",
-                        "value": "Cardiovascular disease is the leading cause of death worldwide."
-                    },
-                    {
-                        "name": "Organism",
-                        "value": "Homo sapiens (human)"
-                    },
-                    {
-                        "name": "alias",
-                        "value": "Phoenix-test-1"
-                    }
-                ],
-                "files": [
-                    {
-                        "path": "raw_reads_1.xlsx",
-                        "attributes": [
-                            {
-                                "name": "Description",
-                                "value": "Raw Data File"
-                            }
-                        ],
-                        "type": "file"
-                    }
-                ],
-                "links": [
-                    {
-                        "url": "ABC123",
-                        "attributes": [
-                            {
-                                "name": "type",
-                                "value": "gen"
-                            }
-                        ]
-                    },
-                    {
-                        "url": "SAMEA7249626",
-                        "attributes": [
-                            {
-                                "name": "Type",
-                                "value": "BioSample"
-                            }
-                        ]
-                    }
-                ],
-                "subsections": [
-                    {
-                        "type": "Author",
-                        "attributes": [
-                            {
-                                "name": "Name",
-                                "value": "John Doe"
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
+    # @staticmethod
+    # def __create_metadata_for_submission_without_file():
+    #     return {
+    #         "attachTo": "Phoenix Project",
+    #         "attributes": [
+    #             {
+    #                 "name": "Title",
+    #                 "value": "phoenix submission example"
+    #             },
+    #             {
+    #                 "name": "Description",
+    #                 "value": "This is the description of a test phoenix submssion."
+    #             }
+    #         ],
+    #         "section": {
+    #             "accno": "Project",
+    #             "type": "Study",
+    #             "attributes": [
+    #                 {
+    #                     "name": "Title",
+    #                     "value": "Cells of the adult human heart"
+    #                 },
+    #                 {
+    #                     "name": "Description",
+    #                     "value": "Cardiovascular disease is the leading cause of death worldwide."
+    #                 },
+    #                 {
+    #                     "name": "Organism",
+    #                     "value": "Homo sapiens (human)"
+    #                 },
+    #                 {
+    #                     "name": "alias",
+    #                     "value": "Phoenix-test-1"
+    #                 }
+    #             ],
+    #             "files": [
+    #             ],
+    #             "links": [
+    #                 {
+    #                     "url": "ABC123",
+    #                     "attributes": [
+    #                         {
+    #                             "name": "type",
+    #                             "value": "gen"
+    #                         }
+    #                     ]
+    #                 },
+    #                 {
+    #                     "url": "SAMEA7249626",
+    #                     "attributes": [
+    #                         {
+    #                             "name": "Type",
+    #                             "value": "BioSample"
+    #                         }
+    #                     ]
+    #                 }
+    #             ],
+    #             "subsections": [
+    #                 {
+    #                     "type": "Author",
+    #                     "attributes": [
+    #                         {
+    #                             "name": "Name",
+    #                             "value": "John Doe"
+    #                         }
+    #                     ]
+    #                 }
+    #             ]
+    #         }
+    #     }
+    #
+    # @staticmethod
+    # def __create_metadata_for_submission_with_a_file():
+    #     return {
+    #         "attachTo": "Phoenix Project",
+    #         "attributes": [
+    #             {
+    #                 "name": "Title",
+    #                 "value": "phoenix submission example"
+    #             },
+    #             {
+    #                 "name": "Description",
+    #                 "value": "This is the description of a test phoenix submssion."
+    #             }
+    #         ],
+    #         "section": {
+    #             "accno": "Project",
+    #             "type": "Study",
+    #             "attributes": [
+    #                 {
+    #                     "name": "Title",
+    #                     "value": "Cells of the adult human heart"
+    #                 },
+    #                 {
+    #                     "name": "Description",
+    #                     "value": "Cardiovascular disease is the leading cause of death worldwide."
+    #                 },
+    #                 {
+    #                     "name": "Organism",
+    #                     "value": "Homo sapiens (human)"
+    #                 },
+    #                 {
+    #                     "name": "alias",
+    #                     "value": "Phoenix-test-1"
+    #                 }
+    #             ],
+    #             "files": [
+    #                 {
+    #                     "path": "raw_reads_1.xlsx",
+    #                     "attributes": [
+    #                         {
+    #                             "name": "Description",
+    #                             "value": "Raw Data File"
+    #                         }
+    #                     ],
+    #                     "type": "file"
+    #                 }
+    #             ],
+    #             "links": [
+    #                 {
+    #                     "url": "ABC123",
+    #                     "attributes": [
+    #                         {
+    #                             "name": "type",
+    #                             "value": "gen"
+    #                         }
+    #                     ]
+    #                 },
+    #                 {
+    #                     "url": "SAMEA7249626",
+    #                     "attributes": [
+    #                         {
+    #                             "name": "Type",
+    #                             "value": "BioSample"
+    #                         }
+    #                     ]
+    #                 }
+    #             ],
+    #             "subsections": [
+    #                 {
+    #                     "type": "Author",
+    #                     "attributes": [
+    #                         {
+    #                             "name": "Name",
+    #                             "value": "John Doe"
+    #                         }
+    #                     ]
+    #                 }
+    #             ]
+    #         }
+    #     }
 
     @staticmethod
     def __get_submission_response_without_file():

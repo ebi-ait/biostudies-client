@@ -37,11 +37,8 @@ class ResponseUtils:
     def __get_response_json(input_response):
         if len(input_response.text) == 0:
             return ''
-        # response_json = input_response.json()
-        # if len(response_json) == 0:
-        #     return {}
-        else:
-            return input_response.json()
+
+        return input_response.json()
 
     @staticmethod
     def __get_error_message(response_json):

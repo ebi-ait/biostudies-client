@@ -1,9 +1,11 @@
+import os
+
 import requests
 
 from biostudiesclient.config import BIOSTUDIES_API_URL
 from biostudiesclient.response_utils import ResponseUtils
-from biostudiesclient.url_paths import CREATE_FOLDER, UPLOAD_FILE, GET_USER_FILES, DELETE_FILE,\
-    CREATE_SUBMISSION
+from biostudiesclient.url_paths import CREATE_FOLDER, UPLOAD_FILE, GET_USER_FILES, DELETE_FILE, \
+    CREATE_SUBMISSION, DELETE_SUBMISSION, GET_SUBMISSION_BY_ACCESSION_ID
 
 
 class Api:
@@ -42,8 +44,10 @@ class Api:
         headers = Api.get_basic_headers(self.session_id)
 
         with open(file_path, "rb") as a_file:
-            file_dict = {file_path: a_file}
-        # file_to_upload = {'upload_file.txt': open(file_path, 'rb')}
+            file_dict = [(
+                'files',
+                (os.path.basename(file_path), a_file)
+            )]
 
             response = ResponseUtils.handle_response(
                 requests.post(url, headers=headers, files=file_dict))
@@ -69,11 +73,30 @@ class Api:
         return response
 
     def create_submission(self, metadata):
-        url = CREATE_SUBMISSION
+        url = self.base_url + CREATE_SUBMISSION
         headers = Api.get_basic_headers(self.session_id)
+        headers.update({'Submission_Type': 'application/json'})
 
         response = ResponseUtils.handle_response(
             requests.post(url, headers=headers, json=metadata))
+
+        return response
+
+    def get_submission(self, accession_id):
+        url = self.base_url + GET_SUBMISSION_BY_ACCESSION_ID.format(accession_id=accession_id)
+        headers = Api.get_basic_headers(self.session_id)
+
+        response = ResponseUtils.handle_response(
+            requests.get(url, headers=headers))
+
+        return response
+
+    def delete_submission(self, accession_id):
+        url = self.base_url + DELETE_SUBMISSION.format(accession_id=accession_id)
+        headers = Api.get_basic_headers(self.session_id)
+
+        response = ResponseUtils.handle_response(
+            requests.delete(url, headers=headers))
 
         return response
 
