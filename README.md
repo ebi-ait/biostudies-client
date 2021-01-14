@@ -10,7 +10,7 @@ do your modification(s) and create a Pull Request against the latest main branch
 We are going to review it and after careful consideration
 we might merge it into the main branch.  
 
-##Overview 
+## Overview 
 
 This API client can be used to do the followings:
 
@@ -31,23 +31,20 @@ If the user would like to upload files that belongs to a submission,
 then the upload should happen first then the submission can be submitted.
 The submission would fail if the user do these steps in the opposite way. 
 
-##Prerequisites
+## Prerequisites
 
 - [Python3](https://installpython3.com)
 
-##Installation
+## Installation
 
 TODO: Add installation method here
 
-##Example usage
+## Example usage
 
----
-**NOTE**
+***NOTE***:
 
-If you execute the above examples against BioStudies TEST environment,
-then you need to login into EBI VPN. 
----
-
+    If you execute the above examples against BioStudies TEST environment,
+    then you need to login into EBI VPN. 
 
 ### Login into BioStudies REST API and get the session id using in further requests
 
