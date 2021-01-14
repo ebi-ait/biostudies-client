@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ebi-ait/biostudies-client.svg?branch=main)](https://travis-ci.org/ebi-ait/biostudies-client.svg?branch=main)
+
 # BioStudies-client - Python library
 
 This library aims to provide a Python client to access/wrap BioStudies REST API.
