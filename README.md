@@ -39,6 +39,19 @@ The submission would fail if the user do these steps in the opposite way.
 
 TODO: Add installation method here
 
+## Required setup
+
+Before using the library some environmental variables like the URL for BioStudies REST API,
+and the credentials (username, password) for it need to be configured.
+
+```
+BIOSTUDIES_API_URL=http://biostudies.url
+BIOSTUDIES_USERNAME=biostudies_username
+BIOSTUDIES_PASSWORD=biostudies_password
+```
+
+This library won't work properly without configuring this variables.
+
 ## Example usage
 
 ***NOTE***:
