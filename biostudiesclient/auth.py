@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from http import HTTPStatus
 import requests
 
-from biostudiesclient.config import BIOSTUDIES_USERNAME, BIOSTUDIES_PASSWORD, BIOSTUDIES_API_URL
+from biostudiesclient.config import get_username_from_env, get_password_from_env, get_biostudies_base_url_from_env
 from biostudiesclient.response_utils import ResponseUtils, STATUS_CODE_OK
 
 
@@ -27,10 +27,7 @@ class Auth:
         if login_url:
             self.login_url = login_url
         else:
-            self.login_url = f'{BIOSTUDIES_API_URL}/auth/login'
-
-        self.username = BIOSTUDIES_USERNAME
-        self.password = BIOSTUDIES_PASSWORD
+            self.login_url = f'{get_biostudies_base_url_from_env()}/auth/login'
 
     def login(self, username=None, password=None):
         """
@@ -55,10 +52,16 @@ class Auth:
         return auth_response
 
     def __set_credentials(self, username, password):
+        self.__initialise_credentials_from_env()
+
         if username:
             self.username = username
         if password:
             self.password = password
+
+    def __initialise_credentials_from_env(self):
+        self.username = get_username_from_env()
+        self.password = get_password_from_env()
 
     def __login_payload(self):
         """

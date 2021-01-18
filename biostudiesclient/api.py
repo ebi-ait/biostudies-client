@@ -12,7 +12,7 @@ This module implements an API that interact with the BioStudies REST API.
 import os
 import requests
 
-from biostudiesclient.config import BIOSTUDIES_API_URL
+from biostudiesclient.config import get_biostudies_base_url_from_env
 from biostudiesclient.response_utils import ResponseUtils
 
 LOGIN_TO_BST = '/auth/login'
@@ -40,7 +40,7 @@ class Api:
     """
 
     def __init__(self, session_id):
-        self.base_url = BIOSTUDIES_API_URL
+        self.base_url = get_biostudies_base_url_from_env()
         self.session_id = session_id
 
     def create_user_sub_folder(self, folder_name):
