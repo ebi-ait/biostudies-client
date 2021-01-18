@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 from mock import patch
 from biostudiesclient.auth import Auth
+from biostudiesclient.rest_error_exception import RestErrorException
 
 
 class TestAuth(unittest.TestCase):
@@ -49,16 +50,16 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(response.status, HTTPStatus.OK)
 
     @patch('biostudiesclient.auth.requests.post')
-    def test_given_incorrect_credentials_returns_error(self, mock_post):
+    def test_given_incorrect_credentials_raise_exception(self, mock_post):
         mock_post.return_value.json.return_value = self.invalid_auth_response
         mock_post.return_value.text = self.invalid_auth_response
         mock_post.return_value.status_code = HTTPStatus.UNAUTHORIZED
 
-        response = self.auth.login()
+        with self.assertRaises(RestErrorException) as context:
+            self.auth.login()
 
-        self.assertEqual(response.status, HTTPStatus.UNAUTHORIZED)
-        self.assertTrue(response.session_id == "")
-        self.assertEqual(response.error_message, self.auth_error_message)
+        self.assertTrue(self.auth_error_message in context.exception.message)
+        self.assertEqual(HTTPStatus.UNAUTHORIZED, context.exception.status_code)
 
 
 if __name__ == '__main__':

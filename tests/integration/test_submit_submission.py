@@ -4,6 +4,7 @@ from http import HTTPStatus
 
 from biostudiesclient.api import Api
 from biostudiesclient.auth import Auth
+from biostudiesclient.rest_error_exception import RestErrorException
 from tests.test_utils import TestUtils
 
 
@@ -57,14 +58,11 @@ class TestSubmitSubmission(unittest.TestCase):
 
         metadata_with_file = TestUtils.create_metadata_for_submission_with_a_file()
 
-        response = self.api.create_submission(metadata_with_file)
+        with self.assertRaises(RestErrorException) as context:
+            self.api.create_submission(metadata_with_file)
 
-        self.assertEqual(response.status, HTTPStatus.BAD_REQUEST)
-
-        error_message = response.error_message
-
-        self.assertTrue(error_message)
-        self.assertEqual(expected_error_message_for_missing_file, error_message)
+        self.assertEqual(expected_error_message_for_missing_file, context.exception.message)
+        self.assertEqual(HTTPStatus.BAD_REQUEST, context.exception.status_code)
 
     def test_when_post_a_submission_with_a_file_then_returns_correct_response(self):
         file_path = "tests/resources/test_file.txt"

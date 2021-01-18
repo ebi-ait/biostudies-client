@@ -5,6 +5,7 @@ from mock import patch
 
 from biostudiesclient.api import Api
 from biostudiesclient.response_utils import TRY_IT_AGAIN_LATER_MESSAGE, WRONG_REQUEST_URL_MESSAGE
+from biostudiesclient.rest_error_exception import RestErrorException
 from tests.test_utils import TestUtils
 
 
@@ -14,20 +15,28 @@ class TestApi(unittest.TestCase):
         self.session_id = 'test.session.id'
         self.api = Api(session_id=self.session_id)
 
-
     @patch('biostudiesclient.api.requests.post')
     def test_when_request_wrong_url_then_returns_not_found_response(self, mock_post):
         url = 'http://example.com/wrong/path'
         folder_name = "test_folder"
+        error_response = {
+            "timestamp": "2021-01-18T14:53:09.309+00:00",
+            "status": 404,
+            "error": "Not Found",
+            "message": "",
+            "path": "/not/existing/path"
+        }
 
         mock_post.return_value.status_code = HTTPStatus.NOT_FOUND
+        mock_post.return_value.json.return_value = error_response
+        mock_post.return_value.text = error_response
         mock_post.return_value.url = url
 
-        response = self.api.create_user_sub_folder(folder_name)
+        with self.assertRaises(RestErrorException) as context:
+            self.api.create_user_sub_folder(folder_name)
 
-        self.assertEqual(response.status, HTTPStatus.NOT_FOUND)
-        self.assertFalse(response.json)
-        self.assertEqual(response.error_message, WRONG_REQUEST_URL_MESSAGE.format(URL=url))
+        self.assertEqual(HTTPStatus.NOT_FOUND, context.exception.status_code)
+        self.assertEqual(WRONG_REQUEST_URL_MESSAGE.format(URL=url), context.exception.message)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_passing_folder_name_then_folder_created(self, mock_post):
@@ -49,11 +58,11 @@ class TestApi(unittest.TestCase):
         folder_name = "test_folder"
         self.session_id = 'incorrect.session.id'
 
-        response = self.api.create_user_sub_folder(folder_name)
+        with self.assertRaises(RestErrorException) as context:
+            self.api.create_user_sub_folder(folder_name)
 
-        self.assertEqual(response.status, HTTPStatus.INTERNAL_SERVER_ERROR)
-        self.assertFalse(response.json)
-        self.assertEqual(response.error_message, TRY_IT_AGAIN_LATER_MESSAGE)
+        self.assertEqual(HTTPStatus.INTERNAL_SERVER_ERROR, context.exception.status_code)
+        self.assertEqual(TRY_IT_AGAIN_LATER_MESSAGE, context.exception.message)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_upload_a_file_then_returns_ok_response(self, mock_post):
@@ -80,11 +89,12 @@ class TestApi(unittest.TestCase):
         mock_post.return_value.status_code = HTTPStatus.BAD_REQUEST
         mock_post.return_value.json.return_value = error_response
         mock_post.return_value.text = error_response
-        response = self.api.upload_file(file_path)
 
-        self.assertEqual(response.status, HTTPStatus.BAD_REQUEST)
-        self.assertFalse(response.json)
-        self.assertEqual(expected_error_message, response.error_message)
+        with self.assertRaises(RestErrorException) as context:
+            self.api.upload_file(file_path)
+
+        self.assertEqual(HTTPStatus.BAD_REQUEST, context.exception.status_code)
+        self.assertEqual(expected_error_message, context.exception.message)
 
     @patch('biostudiesclient.api.requests.get')
     def test_when_request_user_files_then_returns_correct_response(self, mock_get):
@@ -139,6 +149,8 @@ class TestApi(unittest.TestCase):
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_post_a_submission_with_not_existing_file_then_returns_error_response(self, mock_post):
+        expected_error_message = "Submission validation errors. File not found: raw_reads_1.xlsx."
+
         submission_response = self.__get_submission_response_for_not_existing_file()
         mock_post.return_value.status_code = HTTPStatus.BAD_REQUEST
         mock_post.return_value.json.return_value = submission_response
@@ -146,13 +158,11 @@ class TestApi(unittest.TestCase):
 
         metadata = TestUtils.create_metadata_for_submission_with_a_file()
 
-        response = self.api.create_submission(metadata)
+        with self.assertRaises(RestErrorException) as context:
+            self.api.create_submission(metadata)
 
-        self.assertEqual(response.status, HTTPStatus.BAD_REQUEST)
-        self.assertFalse(response.json)
-        self.assertEqual(
-            "Submission validation errors. File not found: raw_reads_1.xlsx.",
-            response.error_message)
+        self.assertEqual(HTTPStatus.BAD_REQUEST, context.exception.status_code)
+        self.assertEqual(expected_error_message, context.exception.message)
 
     @staticmethod
     def __get_user_files_response():

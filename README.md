@@ -85,10 +85,7 @@ api = Api(session_id=<users_session_id>)
 file_path = "path/to/test_file.txt"
 
 # Upload the given file
-response = api.upload_file(file_path)
-
-assert response.status == HTTPStatus.OK
-assert len(response.error_message) == 0
+api.upload_file(file_path)
 ```
 
 ### Create a folder in user's root folder in BioStudies server after authentication
@@ -101,10 +98,7 @@ api = Api(session_id=<users_session_id>)
 folder_name = "test_folder"
 
 # Create the given folder for the user
-response = api.create_user_sub_folder(folder_name)
-
-assert response.status == HTTPStatus.OK
-assert len(response.error_message) == 0
+api.create_user_sub_folder(folder_name)
 ```
 
 ### Submit a submission with metadata and file into BioStudies archive after authentication
@@ -200,7 +194,6 @@ metadata = {
 # submit the submission
 response = api.create_submission(metadata)
 
-assert response.status == HTTPStatus.OK
 assert response.json
 assert response.json['accno']
 
