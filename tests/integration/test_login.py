@@ -2,7 +2,7 @@ import unittest
 from http import HTTPStatus
 
 from biostudiesclient.auth import Auth
-from biostudiesclient.rest_error_exception import RestErrorException
+from biostudiesclient.exceptions import RestErrorException
 
 INVALID_CREDENTIALS_MESSAGE = "Invalid email address or password."
 

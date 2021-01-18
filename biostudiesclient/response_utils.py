@@ -11,7 +11,7 @@ This module dealing with HTTP responses.
 from dataclasses import dataclass
 from http import HTTPStatus
 
-from biostudiesclient.rest_error_exception import RestErrorException
+from biostudiesclient.exceptions import RestErrorException
 
 STATUS_CODE_OK = 200
 STATUS_CODE_CREATED = 201

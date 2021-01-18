@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 from biostudiesclient.api import Api
 from biostudiesclient.auth import Auth
-from biostudiesclient.rest_error_exception import RestErrorException
+from biostudiesclient.exceptions import RestErrorException
 from tests.test_utils import TestUtils
 
 

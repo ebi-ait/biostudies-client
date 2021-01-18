@@ -1,5 +1,5 @@
 """
-biostudiesclient.rest_error_exception
+biostudiesclient.exceptions
 ~~~~~~~~~~~~
 
 This module contains a custom exception definition regarding to BioStudies client library.

@@ -5,7 +5,7 @@ from mock import patch
 
 from biostudiesclient.api import Api
 from biostudiesclient.response_utils import TRY_IT_AGAIN_LATER_MESSAGE, WRONG_REQUEST_URL_MESSAGE
-from biostudiesclient.rest_error_exception import RestErrorException
+from biostudiesclient.exceptions import RestErrorException
 from tests.test_utils import TestUtils
 
 
