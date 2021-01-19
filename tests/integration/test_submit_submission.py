@@ -27,7 +27,6 @@ class TestSubmitSubmission(unittest.TestCase):
         self.assertTrue(response_json)
         accession_id = response_json['accno']
         self.assertTrue(accession_id)
-        self.assertFalse(response.error_message)
 
         self.__clean_up(accession_id)
 
@@ -49,7 +48,6 @@ class TestSubmitSubmission(unittest.TestCase):
 
         self.assertTrue(get_response_json)
         self.assertEqual(accession_id, get_response_json['accno'])
-        self.assertFalse(get_response.error_message)
 
         self.__clean_up(accession_id)
 
@@ -80,7 +78,6 @@ class TestSubmitSubmission(unittest.TestCase):
         self.assertTrue(response_json)
         accession_id = response_json['accno']
         self.assertTrue(accession_id)
-        self.assertFalse(response.error_message)
 
         # clean up the submission and the file
         self.__clean_up(accession_id)

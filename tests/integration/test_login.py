@@ -18,7 +18,6 @@ class TestLogin(unittest.TestCase):
 
         self.assertTrue(response.session_id)
         self.assertEqual(response.status, HTTPStatus.OK)
-        self.assertFalse(response.error_message)
 
     def test_when_login_with_wrong_credentials_from_env_then_raises_exception(self):
         existing_username_from_env = os.environ['BIOSTUDIES_USERNAME']

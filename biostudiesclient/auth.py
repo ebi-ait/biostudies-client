@@ -44,10 +44,7 @@ class Auth:
         response = ResponseUtils.handle_response(requests.post(self.login_url, json=self.__login_payload()))
 
         auth_response = AuthResponse(status=HTTPStatus(response.status))
-        if response.status == STATUS_CODE_OK:
-            auth_response.session_id = response.json["sessid"]
-        else:
-            auth_response.error_message = response.error_message
+        auth_response.session_id = response.json["sessid"]
 
         return auth_response
 
@@ -87,4 +84,3 @@ class AuthResponse:
 
     status: HTTPStatus
     session_id: str = ""
-    error_message: str = ""

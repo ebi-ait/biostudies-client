@@ -49,7 +49,6 @@ class TestApi(unittest.TestCase):
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
-        self.assertFalse(response.error_message)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_passing_incorrect_session_id_then_response_with_error(self, mock_post):
@@ -75,7 +74,6 @@ class TestApi(unittest.TestCase):
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
-        self.assertFalse(response.error_message)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_upload_a_file_with_wrong_header_then_returns_error_response(self, mock_post):
@@ -109,7 +107,6 @@ class TestApi(unittest.TestCase):
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertEqual(len(response.json), 4)
         self.assertEqual(response.json, user_files_response)
-        self.assertFalse(response.error_message)
 
     @patch('biostudiesclient.api.requests.delete')
     def test_when_delete_user_files_then_returns_correct_response(self, mock_delete):
@@ -122,7 +119,6 @@ class TestApi(unittest.TestCase):
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
-        self.assertFalse(response.error_message)
 
     # TODO Whenever Biostudies correct their API and returns the correct HTTP Status Code
     # when a file is not available for deletion then write a test against it
@@ -145,7 +141,6 @@ class TestApi(unittest.TestCase):
 
         self.assertTrue(response_json)
         self.assertEqual(response_json['accno'], submission_response['accno'])
-        self.assertFalse(response.error_message)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_post_a_submission_with_not_existing_file_then_returns_error_response(self, mock_post):

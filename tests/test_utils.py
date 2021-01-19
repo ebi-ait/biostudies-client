@@ -6,12 +6,8 @@ class TestUtils:
     @staticmethod
     def get_session_id(auth):
         auth_response = auth.login()
-        auth_status = auth_response.status
 
-        if auth_status == HTTPStatus.OK:
-            return auth_response.session_id
-
-        return auth_response.error_message
+        return auth_response.session_id
 
     @staticmethod
     def create_metadata_for_submission_without_file():

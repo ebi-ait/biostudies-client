@@ -24,7 +24,6 @@ class TestFolderCreation(unittest.TestCase):
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
-        self.assertFalse(response.error_message)
 
 
 if __name__ == '__main__':

@@ -98,5 +98,4 @@ class ResponseObject:
     """
 
     status = HTTPStatus.OK
-    error_message = ""
     json = {}
