@@ -47,7 +47,8 @@ class ResponseUtils:
         """
 
         response = ResponseObject()
-        response_json = ResponseUtils.__get_response_json(input_response)
+        if input_response.status_code != STATUS_CODE_INTERNAL_SERVER_ERROR:
+            response_json = ResponseUtils.__get_response_json(input_response)
         error_message = ''
 
         if input_response.status_code == STATUS_CODE_NOT_FOUND:

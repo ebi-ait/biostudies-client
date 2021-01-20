@@ -63,25 +63,29 @@ class TestSubmitSubmission(unittest.TestCase):
         self.assertEqual(HTTPStatus.BAD_REQUEST, context.exception.status_code)
 
     def test_when_post_a_submission_with_a_file_then_returns_correct_response(self):
+        folder1 = 'sub1'
+        txt_folder_name = '{}/txt_files'.format(folder1)
+
+        self.api.create_user_sub_folder(txt_folder_name)
+
         file_path = "tests/resources/test_file.txt"
 
-        self.api.upload_file(file_path)
+        self.api.upload_file(file_path, txt_folder_name)
 
         metadata_with_file = TestUtils.create_metadata_for_submission_with_a_file()
+        metadata_with_file['section']['files'][0]['path'] = txt_folder_name + '/test_file.txt'
 
         response = self.api.create_submission(metadata_with_file)
 
         self.assertEqual(response.status, HTTPStatus.OK)
-
         response_json = response.json
-
         self.assertTrue(response_json)
         accession_id = response_json['accno']
         self.assertTrue(accession_id)
 
         # clean up the submission and the file
         self.__clean_up(accession_id)
-        self.api.delete_file(os.path.basename(file_path))
+        self.api.delete_file(os.path.basename(folder1))
 
     def __clean_up(self, accession_id):
         self.api.delete_submission(accession_id)

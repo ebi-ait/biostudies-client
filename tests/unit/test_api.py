@@ -1,4 +1,5 @@
 import unittest
+import uuid
 from http import HTTPStatus
 
 from mock import patch
@@ -51,6 +52,20 @@ class TestApi(unittest.TestCase):
         self.assertFalse(response.json)
 
     @patch('biostudiesclient.api.requests.post')
+    def test_when_passing_folder_structure_then_folder_structure_created(self, mock_post):
+        folder1 = str(uuid.uuid1())
+        folder2 = str(uuid.uuid1())
+        folder_structure = '/'.join([folder1, folder2])
+
+        mock_post.return_value.status_code = HTTPStatus.OK
+        mock_post.return_value.json.return_value = {}
+
+        response = self.api.create_user_sub_folder(folder_structure)
+
+        self.assertEqual(response.status, HTTPStatus.OK)
+        self.assertFalse(response.json)
+
+    @patch('biostudiesclient.api.requests.post')
     def test_when_passing_incorrect_session_id_then_response_with_error(self, mock_post):
         mock_post.return_value.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
 
@@ -74,6 +89,21 @@ class TestApi(unittest.TestCase):
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertFalse(response.json)
+
+    @patch('biostudiesclient.api.requests.post')
+    def test_when_upload_a_file_to_an_existing_sub_folder_then_returns_ok_response(self, mock_post):
+        mock_post.return_value.status_code = HTTPStatus.OK
+        mock_post.return_value.json.return_value = {}
+
+        file_path = "tests/resources/test_file.txt"
+        folder1 = str(uuid.uuid1())
+        folder2 = str(uuid.uuid1())
+        random_folder_name = '/'.join([folder1, folder2])
+
+        file_upload_response = self.api.upload_file(file_path, random_folder_name)
+
+        self.assertEqual(file_upload_response.status, HTTPStatus.OK)
+        self.assertFalse(file_upload_response.json)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_upload_a_file_with_wrong_header_then_returns_error_response(self, mock_post):
@@ -103,6 +133,23 @@ class TestApi(unittest.TestCase):
         mock_get.return_value.text = user_files_response
 
         response = self.api.get_user_files()
+
+        self.assertEqual(response.status, HTTPStatus.OK)
+        self.assertEqual(len(response.json), 4)
+        self.assertEqual(response.json, user_files_response)
+
+    @patch('biostudiesclient.api.requests.get')
+    def test_when_request_user_files_from_sub_folder_then_returns_correct_response(self, mock_get):
+        user_files_response = self.__get_user_files_response()
+        folder1 = str(uuid.uuid1())
+        folder2 = str(uuid.uuid1())
+        random_folder_name = '/'.join([folder1, folder2])
+
+        mock_get.return_value.status_code = HTTPStatus.OK
+        mock_get.return_value.json.return_value = user_files_response
+        mock_get.return_value.text = user_files_response
+
+        response = self.api.get_user_files(random_folder_name)
 
         self.assertEqual(response.status, HTTPStatus.OK)
         self.assertEqual(len(response.json), 4)
