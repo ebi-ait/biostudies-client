@@ -1,13 +1,4 @@
-from http import HTTPStatus
-
-
 class TestUtils:
-
-    @staticmethod
-    def get_session_id(auth):
-        auth_response = auth.login()
-
-        return auth_response.session_id
 
     @staticmethod
     def create_metadata_for_submission_without_file():

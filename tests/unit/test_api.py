@@ -2,7 +2,7 @@ import unittest
 import uuid
 from http import HTTPStatus
 
-from mock import patch
+from mock import patch, MagicMock
 
 from biostudiesclient.api import Api
 from biostudiesclient.response_utils import TRY_IT_AGAIN_LATER_MESSAGE, WRONG_REQUEST_URL_MESSAGE
@@ -14,7 +14,11 @@ class TestApi(unittest.TestCase):
 
     def setUp(self) -> None:
         self.session_id = 'test.session.id'
-        self.api = Api(session_id=self.session_id)
+
+        self.auth = MagicMock()
+        self.auth.session_id = self.session_id
+        self.auth.base_url = "http://example.com"
+        self.api = Api(self.auth)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_request_wrong_url_then_returns_not_found_response(self, mock_post):
@@ -234,158 +238,6 @@ class TestApi(unittest.TestCase):
                 "type": "DIR"
             }
         ]
-
-    # @staticmethod
-    # def __create_metadata_for_submission_without_file():
-    #     return {
-    #         "attachTo": "Phoenix Project",
-    #         "attributes": [
-    #             {
-    #                 "name": "Title",
-    #                 "value": "phoenix submission example"
-    #             },
-    #             {
-    #                 "name": "Description",
-    #                 "value": "This is the description of a test phoenix submssion."
-    #             }
-    #         ],
-    #         "section": {
-    #             "accno": "Project",
-    #             "type": "Study",
-    #             "attributes": [
-    #                 {
-    #                     "name": "Title",
-    #                     "value": "Cells of the adult human heart"
-    #                 },
-    #                 {
-    #                     "name": "Description",
-    #                     "value": "Cardiovascular disease is the leading cause of death worldwide."
-    #                 },
-    #                 {
-    #                     "name": "Organism",
-    #                     "value": "Homo sapiens (human)"
-    #                 },
-    #                 {
-    #                     "name": "alias",
-    #                     "value": "Phoenix-test-1"
-    #                 }
-    #             ],
-    #             "files": [
-    #             ],
-    #             "links": [
-    #                 {
-    #                     "url": "ABC123",
-    #                     "attributes": [
-    #                         {
-    #                             "name": "type",
-    #                             "value": "gen"
-    #                         }
-    #                     ]
-    #                 },
-    #                 {
-    #                     "url": "SAMEA7249626",
-    #                     "attributes": [
-    #                         {
-    #                             "name": "Type",
-    #                             "value": "BioSample"
-    #                         }
-    #                     ]
-    #                 }
-    #             ],
-    #             "subsections": [
-    #                 {
-    #                     "type": "Author",
-    #                     "attributes": [
-    #                         {
-    #                             "name": "Name",
-    #                             "value": "John Doe"
-    #                         }
-    #                     ]
-    #                 }
-    #             ]
-    #         }
-    #     }
-    #
-    # @staticmethod
-    # def __create_metadata_for_submission_with_a_file():
-    #     return {
-    #         "attachTo": "Phoenix Project",
-    #         "attributes": [
-    #             {
-    #                 "name": "Title",
-    #                 "value": "phoenix submission example"
-    #             },
-    #             {
-    #                 "name": "Description",
-    #                 "value": "This is the description of a test phoenix submssion."
-    #             }
-    #         ],
-    #         "section": {
-    #             "accno": "Project",
-    #             "type": "Study",
-    #             "attributes": [
-    #                 {
-    #                     "name": "Title",
-    #                     "value": "Cells of the adult human heart"
-    #                 },
-    #                 {
-    #                     "name": "Description",
-    #                     "value": "Cardiovascular disease is the leading cause of death worldwide."
-    #                 },
-    #                 {
-    #                     "name": "Organism",
-    #                     "value": "Homo sapiens (human)"
-    #                 },
-    #                 {
-    #                     "name": "alias",
-    #                     "value": "Phoenix-test-1"
-    #                 }
-    #             ],
-    #             "files": [
-    #                 {
-    #                     "path": "raw_reads_1.xlsx",
-    #                     "attributes": [
-    #                         {
-    #                             "name": "Description",
-    #                             "value": "Raw Data File"
-    #                         }
-    #                     ],
-    #                     "type": "file"
-    #                 }
-    #             ],
-    #             "links": [
-    #                 {
-    #                     "url": "ABC123",
-    #                     "attributes": [
-    #                         {
-    #                             "name": "type",
-    #                             "value": "gen"
-    #                         }
-    #                     ]
-    #                 },
-    #                 {
-    #                     "url": "SAMEA7249626",
-    #                     "attributes": [
-    #                         {
-    #                             "name": "Type",
-    #                             "value": "BioSample"
-    #                         }
-    #                     ]
-    #                 }
-    #             ],
-    #             "subsections": [
-    #                 {
-    #                     "type": "Author",
-    #                     "attributes": [
-    #                         {
-    #                             "name": "Name",
-    #                             "value": "John Doe"
-    #                         }
-    #                     ]
-    #                 }
-    #             ]
-    #         }
-    #     }
 
     @staticmethod
     def __get_submission_response_without_file():

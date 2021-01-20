@@ -5,15 +5,14 @@ from http import HTTPStatus
 
 from biostudiesclient.api import Api
 from biostudiesclient.auth import Auth
-from tests.test_utils import TestUtils
 
 
 class TestFileUpload(unittest.TestCase):
 
     def setUp(self) -> None:
         self.auth = Auth()
-        self.session_id = TestUtils.get_session_id(auth=self.auth)
-        self.api = Api(session_id=self.session_id)
+        self.auth.login()
+        self.api = Api(self.auth)
 
         self.file_path = "tests/resources/test_file.txt"
 

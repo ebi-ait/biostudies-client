@@ -12,7 +12,6 @@ This module implements an API that interact with the BioStudies REST API.
 import os
 import requests
 
-from biostudiesclient.config import get_biostudies_base_url_from_env
 from biostudiesclient.response_utils import ResponseUtils
 
 LOGIN_TO_BST = '/auth/login'
@@ -40,9 +39,9 @@ class Api:
     - delete an existing submission from the BioStudies archive
     """
 
-    def __init__(self, session_id):
-        self.base_url = get_biostudies_base_url_from_env()
-        self.session_id = session_id
+    def __init__(self, auth):
+        self.auth = auth
+        self.base_url = auth.base_url
 
     def create_user_sub_folder(self, folder_name):
         """
@@ -56,7 +55,7 @@ class Api:
 
         url = self.base_url + CREATE_FOLDER.format(folder_name=folder_name)
 
-        headers = Api.get_basic_headers(self.session_id)
+        headers = self.get_basic_headers()
         response = ResponseUtils.handle_response(requests.post(url, headers=headers))
 
         return response
@@ -77,7 +76,7 @@ class Api:
         if folder_path:
             url = '/'.join([url, folder_path])
 
-        headers = Api.get_basic_headers(self.session_id)
+        headers = self.get_basic_headers()
 
         with open(file_path, "rb") as a_file:
             file_dict = [(
@@ -108,7 +107,7 @@ class Api:
         if folder_path:
             url = '/'.join([url, folder_path])
 
-        headers = Api.get_basic_headers(self.session_id)
+        headers = self.get_basic_headers()
 
         response = ResponseUtils.handle_response(
             requests.get(url, headers=headers))
@@ -126,7 +125,7 @@ class Api:
         """
 
         url = self.base_url + DELETE_FILE.format(file_name=file_name)
-        headers = Api.get_basic_headers(self.session_id)
+        headers = self.get_basic_headers()
 
         response = ResponseUtils.handle_response(
             requests.delete(url, headers=headers))
@@ -144,7 +143,7 @@ class Api:
         """
 
         url = self.base_url + CREATE_SUBMISSION
-        headers = Api.get_basic_headers(self.session_id)
+        headers = self.get_basic_headers()
         headers.update({'Submission_Type': 'application/json'})
 
         response = ResponseUtils.handle_response(
@@ -161,7 +160,7 @@ class Api:
         """
 
         url = self.base_url + GET_SUBMISSION_BY_ACCESSION_ID.format(accession_id=accession_id)
-        headers = Api.get_basic_headers(self.session_id)
+        headers = self.get_basic_headers()
 
         response = ResponseUtils.handle_response(
             requests.get(url, headers=headers))
@@ -177,15 +176,21 @@ class Api:
         """
 
         url = self.base_url + DELETE_SUBMISSION.format(accession_id=accession_id)
-        headers = Api.get_basic_headers(self.session_id)
+        headers = self.get_basic_headers()
 
         response = ResponseUtils.handle_response(
             requests.delete(url, headers=headers))
 
         return response
 
-    @staticmethod
-    def get_basic_headers(session_id):
+    def session_id(self):
+        """
+        Gets session id from Auth object.
+        :return: Session id from Auth object.
+        """
+        return self.auth.session_id
+
+    def get_basic_headers(self):
         """
         Creates and returns a dictionary with the session id parameter
         for the HTTP header request.
@@ -195,5 +200,5 @@ class Api:
         """
 
         return {
-            'X-SESSION-TOKEN': session_id
+            'X-SESSION-TOKEN': self.session_id()
         }

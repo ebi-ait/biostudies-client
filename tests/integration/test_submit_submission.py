@@ -12,8 +12,8 @@ class TestSubmitSubmission(unittest.TestCase):
 
     def setUp(self) -> None:
         self.auth = Auth()
-        self.session_id = TestUtils.get_session_id(auth=self.auth)
-        self.api = Api(session_id=self.session_id)
+        self.auth.login()
+        self.api = Api(self.auth)
 
     def test_when_post_a_submission_without_a_file_then_returns_correct_response(self):
         metadata = TestUtils.create_metadata_for_submission_without_file()

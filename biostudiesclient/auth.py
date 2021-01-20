@@ -13,7 +13,7 @@ from http import HTTPStatus
 import requests
 
 from biostudiesclient.config import get_username_from_env, get_password_from_env, get_biostudies_base_url_from_env
-from biostudiesclient.response_utils import ResponseUtils, STATUS_CODE_OK
+from biostudiesclient.response_utils import ResponseUtils
 
 
 class Auth:
@@ -23,17 +23,24 @@ class Auth:
     and gets the session id from its response.
     """
 
-    def __init__(self, login_url=None):
-        if login_url:
-            self.login_url = login_url
+    def __init__(self, base_url=None):
+        self.username = None
+        self.password = None
+        self.session_id = None
+        if base_url:
+            self.base_url = base_url
         else:
-            self.login_url = f'{get_biostudies_base_url_from_env()}/auth/login'
+            self.base_url = get_biostudies_base_url_from_env()
+
+        self.login_url = f'{self.base_url}/auth/login'
 
     def login(self, username=None, password=None):
         """
         This method tries to send a login request with the configured credentials
         to the BioStudies REST API.
-        Checks the returned status code. In case it is 200 OK, then parse the response and gets the session id from it.
+        The URL to send the login request is defined during initialisation.
+        The method checks the returned status code from BioStudies REST API.
+        In case it is 200 OK, then parse the response and gets the session id from it.
         Otherwise it gets the error message from the response.
         :return: Response from BioStudies API with the session id or the error message included
         :rtype biostudiesclient.auth.AuthResponse
@@ -44,7 +51,9 @@ class Auth:
         response = ResponseUtils.handle_response(requests.post(self.login_url, json=self.__login_payload()))
 
         auth_response = AuthResponse(status=HTTPStatus(response.status))
-        auth_response.session_id = response.json["sessid"]
+
+        self.session_id = response.json["sessid"]
+        auth_response.session_id = self.session_id
 
         return auth_response
 
