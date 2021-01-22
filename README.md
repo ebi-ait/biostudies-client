@@ -38,7 +38,7 @@ The submission would fail if the user do these steps in the opposite order.
   
 ## Installation  
   
-TODO: Add installation method here  
+        pip install biostudies-client  
   
 ## Configuration  
   
@@ -251,3 +251,35 @@ assert response.json['accno']
 # print the accession ID of the submission  
 print(response.json['accno'])  
 ```
+
+## Developer Notes
+
+### Publish to PyPI
+
+1. Create PyPI Account through the [registration page](https://pypi.org/account/register/).
+    
+   Take note that PyPI requires email addresses to be verified before publishing.
+   
+3. Add a `setup.py` configuration file containing the name and version of the project.
+
+3. Package the project for distribution.
+ 
+        python setup.py sdist
+        
+    Take note that `setup.py` is configured to build a distribution with name `biostudies-client`.
+    Currently this PyPI project is owned privately and may require access rights to change. 
+    Alternatively, the project name in `setup.py` can be changed so that it can be built and
+    uploaded to a different PyPI entry.
+    
+4. Install [Twine](https://pypi.org/project/twine/)
+
+        pip install twine        
+    
+5. Upload the distribution package to PyPI. 
+
+        twine upload dist/*
+        
+    Running `python setup.py sdist` will create a package in the `dist` directory of the project
+    base directory. Specific packages can be chosen if preferred instead of the wildcard `*`:
+    
+        twine upload dist/biostudies-client-0.1.0.tar
