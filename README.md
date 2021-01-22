@@ -80,7 +80,23 @@ You can login like this:
 auth = Auth()
 auth.login()
 ```
-  
+
+## Running the integration tests
+
+1. Require user credentials (user name and password) and 
+URL for BioStudies REST API from the BioStudies team [biostudies@ebi.ac.uk](mailto:biostudies@ebi.ac.uk).
+
+2. Use environmental variables for the configuration.
+You can find how to do it here: [Configure with environmental parameters](#configure-with-environmental-parameters)
+
+3. Login to EBI VPN using your EBI credentials to be able to access BioStudies DEV or TEST REST API.
+
+4. Execute the following statement
+
+```
+python3 -m unittest discover -s tests/integration
+```
+
 ## Example usage  
   
 ***NOTE***:  
