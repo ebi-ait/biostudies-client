@@ -5,7 +5,7 @@ from http import HTTPStatus
 from mock import patch, MagicMock
 
 from biostudiesclient.api import Api
-from biostudiesclient.response_utils import TRY_IT_AGAIN_LATER_MESSAGE, WRONG_REQUEST_URL_MESSAGE
+from biostudiesclient.response_utils import TRY_IT_AGAIN_LATER_MESSAGE
 from biostudiesclient.exceptions import RestErrorException
 from tests.test_utils import TestUtils
 
@@ -41,7 +41,8 @@ class TestApi(unittest.TestCase):
             self.api.create_user_sub_folder(folder_name)
 
         self.assertEqual(HTTPStatus.NOT_FOUND, context.exception.status_code)
-        self.assertEqual(WRONG_REQUEST_URL_MESSAGE.format(URL=url), context.exception.message)
+        self.assertEqual(f'This URL {url} not exists. Please, try to correct the requested URL.',
+                         context.exception.message)
 
     @patch('biostudiesclient.api.requests.post')
     def test_when_passing_folder_name_then_folder_created(self, mock_post):

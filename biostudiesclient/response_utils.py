@@ -10,21 +10,12 @@ This module dealing with HTTP responses.
 
 from dataclasses import dataclass
 from http import HTTPStatus
+import requests
 
 from biostudiesclient.exceptions import RestErrorException
 
-STATUS_CODE_OK = 200
-STATUS_CODE_CREATED = 201
-STATUS_CODE_ACCEPTED = 202
-STATUS_CODE_NO_CONTENT = 204
-
-STATUS_CODE_BAD_REQUEST = 400
-STATUS_CODE_NOT_FOUND = 404
-
-STATUS_CODE_INTERNAL_SERVER_ERROR = 500
-
-TRY_IT_AGAIN_LATER_MESSAGE = "Unknown error happened. Please, try it again later."
-WRONG_REQUEST_URL_MESSAGE = "This URL {URL} not exists. Please, try to correct the requested URL."
+TRY_IT_AGAIN_LATER_MESSAGE = "The request to the BioStudies service returned a HTTP Server error." \
+                             "Please check the health of the BioStudies service, you may need to resubmit your request"
 
 
 class ResponseUtils:
@@ -47,16 +38,18 @@ class ResponseUtils:
         """
 
         response = ResponseObject()
-        if input_response.status_code != STATUS_CODE_INTERNAL_SERVER_ERROR:
+        response_json = {}
+        if input_response.status_code != requests.codes['internal_server_error']:
             response_json = ResponseUtils.__get_response_json(input_response)
         error_message = ''
 
-        if input_response.status_code == STATUS_CODE_NOT_FOUND:
-            error_message = WRONG_REQUEST_URL_MESSAGE.format(URL=input_response.url)
-        elif input_response.status_code == STATUS_CODE_INTERNAL_SERVER_ERROR:
+        if input_response.status_code == requests.codes['not_found']:
+            error_message = f'This URL {input_response.url} not exists. Please, try to correct the requested URL.'
+        elif input_response.status_code == requests.codes['internal_server_error']:
             error_message = TRY_IT_AGAIN_LATER_MESSAGE
         elif input_response.status_code not in \
-                [STATUS_CODE_OK, STATUS_CODE_CREATED, STATUS_CODE_ACCEPTED, STATUS_CODE_NO_CONTENT]:
+                [requests.codes['ok'], requests.codes['created'], requests.codes['accepted'],
+                 requests.codes['no_content']]:
             error_message = ResponseUtils.__get_error_message(response_json)
             if not error_message:
                 error_message = TRY_IT_AGAIN_LATER_MESSAGE
