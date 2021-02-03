@@ -18,7 +18,6 @@ class TestUtils:
     def create_metadata_for_submission_with_a_file():
         bio_study = TestUtils.create_bio_study_without_file()
 
-        bio_study.section.files = set()
         bio_study.section.files.add(
             TestUtils.create_bio_study_file("test_file.txt", "BAM",
                                             {TestUtils.create_attribute("Description", "Raw Data File")})
@@ -37,7 +36,6 @@ class TestUtils:
         bio_study = BioStudy()
         bio_study.attach_to = "Phoenix Project"
 
-        bio_study.attributes = set()
         bio_study.attributes.add(
             TestUtils.create_attribute("Title", "phoenix submission example"))
         bio_study.attributes.add(
@@ -47,7 +45,6 @@ class TestUtils:
         bio_study_section.accno = "Project"
         bio_study_section.section_type = "Study"
 
-        bio_study_section.attributes = set()
         bio_study_section.attributes.add(
             TestUtils.create_attribute("Title", "Cells of the adult human heart"))
         bio_study_section.attributes.add(
@@ -58,13 +55,11 @@ class TestUtils:
         bio_study_section.attributes.add(
             TestUtils.create_attribute("alias", "Phoenix-test-1"))
 
-        bio_study_section.links = set()
         bio_study_section.links.add(
             TestUtils.create_bio_study_link("ABC123", {TestUtils.create_attribute("alias", "Phoenix-test-1")}))
         bio_study_section.links.add(
             TestUtils.create_bio_study_link("SAMEA7249626", {TestUtils.create_attribute("Type", "BioSample")}))
 
-        bio_study_section.subsections = set()
         bio_study_section.subsections.add(
             TestUtils.create_sub_section("Author", {TestUtils.create_attribute("Name", "John Doe")}))
 

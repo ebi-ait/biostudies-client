@@ -10,7 +10,7 @@ This module contains the data models for BioStudy entities.
 
 import dataclasses
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Set
 
 
@@ -29,7 +29,7 @@ class BioStudyFile:
     """ Data class that represent a file for BioStudies archive. """
     path: str = None
     file_type: str = None
-    attributes: Set[BioStudiesAttribute] = None
+    attributes: Set[BioStudiesAttribute] = field(default_factory=set)
 
     def __hash__(self):
         return hash((self.path, self.file_type))
@@ -39,7 +39,7 @@ class BioStudyFile:
 class BioStudyLink:
     """ Data class that represent a link for BioStudies archive to another entity that might be in another archive. """
     url: str = None
-    attributes: Set[BioStudiesAttribute] = None
+    attributes: Set[BioStudiesAttribute] = field(default_factory=set)
 
     def __hash__(self):
         return hash(self.url)
@@ -49,7 +49,7 @@ class BioStudyLink:
 class BioStudySubsection:
     """ Data class that represent a sub section inside a submission to BioStudies archive. """
     sub_section_type: str = None
-    attributes: Set[BioStudiesAttribute] = None
+    attributes: Set[BioStudiesAttribute] = field(default_factory=set)
 
     def __hash__(self):
         return hash(self.sub_section_type)
@@ -60,10 +60,10 @@ class BioStudySection:
     """ Data class that represent a section inside a submission to BioStudies archive. """
     section_type: str = None
     accno: str = None
-    attributes: Set[BioStudiesAttribute] = None
-    files: Set[BioStudyFile] = None
-    links: Set[BioStudyLink] = None
-    subsections: Set[BioStudySubsection] = None
+    attributes: Set[BioStudiesAttribute] = field(default_factory=set)
+    files: Set[BioStudyFile] = field(default_factory=set)
+    links: Set[BioStudyLink] = field(default_factory=set)
+    subsections: Set[BioStudySubsection] = field(default_factory=set)
 
 
 @dataclass
@@ -71,7 +71,7 @@ class BioStudy:
     """ Data class that represent the highest level of a BioStudies submission. """
     accno: str = None
     attach_to: str = None
-    attributes: Set[BioStudiesAttribute] = None
+    attributes: Set[BioStudiesAttribute] = field(default_factory=set)
     section: BioStudySection = None
 
 
