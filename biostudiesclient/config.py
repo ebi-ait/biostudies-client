@@ -4,7 +4,7 @@ import os
 
 
 def get_biostudies_base_url_from_env():
-    biostudies_api_url_dev = 'http://biostudy-dev:8788'
+    biostudies_api_url_dev = 'https://wwwdev.ebi.ac.uk/biostudies/submissions/api'
     return os.environ.get('BIOSTUDIES_API_URL', biostudies_api_url_dev)
 
 
