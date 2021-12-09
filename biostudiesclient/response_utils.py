@@ -71,13 +71,13 @@ class ResponseUtils:
 
     @staticmethod
     def __get_error_message(response_json):
-        message = response_json["log"]["message"]
-        detailed_messages = response_json["log"]["subnodes"]
+        message = response_json.get("log", {}). get("message", '')
+        detailed_messages = response_json.get("log", {}).get("subnodes", '')
         if detailed_messages:
             for additional_message in detailed_messages:
-                message += " " + additional_message['message']
+                message += " " + additional_message.get('message', '')
         if not message:
-            message = response_json["message"]
+            message = response_json.get("message", '')
 
         return message
 

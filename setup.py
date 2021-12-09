@@ -12,7 +12,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='biostudies-client',
-    version='0.1.4',
+    version='0.1.5',
     description="Python client library for wrapping and handling BioStudies REST API calls",
     long_description=long_description,
     long_description_content_type="text/markdown",
