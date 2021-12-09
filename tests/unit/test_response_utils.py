@@ -37,8 +37,8 @@ class TestResponseUtils(unittest.TestCase):
         assert_that(self.response_utils.handle_response)\
             .raises(RestErrorException)\
             .when_called_with(input_response)\
-            .starts_with('(\'Something')\
-            .is_equal_to('(\'Something went wrong.\', <HTTPStatus.REQUEST_TIMEOUT: 408>)')
+            .starts_with("('Something")\
+            .is_equal_to("('Something went wrong.', <HTTPStatus.REQUEST_TIMEOUT: 408>)")
 
     def test_when_processing_detailed_error_message_returns_parsed_message(self):
         input_response = Mock(spec=Response)
@@ -58,8 +58,8 @@ class TestResponseUtils(unittest.TestCase):
         assert_that(self.response_utils.handle_response) \
             .raises(RestErrorException) \
             .when_called_with(input_response) \
-            .starts_with('(\'A detailed') \
-            .is_equal_to('(\'A detailed error message\', <HTTPStatus.BAD_REQUEST: 400>)')
+            .starts_with("('A detailed") \
+            .is_equal_to("('A detailed error message', <HTTPStatus.BAD_REQUEST: 400>)")
 
     def correct_response_text_with_session_id(self):
         return {
